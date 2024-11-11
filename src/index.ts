@@ -23,14 +23,8 @@ export default {
 
 				const querySolarTerm = "SELECT * FROM SolarTerms WHERE name = ? "
 				const { results: solarTerms } = await env.D1_DB_CONNECTION.prepare(querySolarTerm).bind(closestEventDate.eventName).all<SolarTermType>()
-
-				console.log('JSON.stringify(closestEventDate)')
-				console.log(JSON.stringify(closestEventDate))
-				console.log('JSON.stringify(solarTerms)')
-				console.log(JSON.stringify(solarTerms))
 				const solarTerm = solarTerms[0]
-
-				return new Response(JSON.stringify({ ...closestEventDate, daysBetween, solarTerm }), { headers: { 'Content-Type': 'application/json' } });
+				return new Response(JSON.stringify({ ...closestEventDate, daysBetween, solarTerm }), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
 			default:
 				return new Response('Hello World!');
 		}
