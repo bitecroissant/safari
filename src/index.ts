@@ -3,16 +3,16 @@ import { Time, time } from "./lib/time";
 import { getPoetryLine } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
-
 const DOMAIN = "gualand.cc"
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		const origin = request.headers.get('Origin')
-		// 推送前打开下面注释
-		if (!origin || !origin.endsWith(DOMAIN)) {
-			return responseForbidden()
-		}
+		// // 如果需要跨域控制 推送前打开下面注释
+		// const origin = request.headers.get('Origin')
+		// console.log(origin)
+		// if (!origin || !origin.endsWith(DOMAIN)) {
+		// 	return responseForbidden()
+		// }
 
 		const parsedUrl = new URL(request.url);
 		const path = parsedUrl.pathname;
