@@ -20,7 +20,10 @@ export class Time {
     #date: Date
 
     constructor(t?: number | string | Date) {
-        this.#date = t ? new Date(t) : new Date()
+        // 北京时间是 UTC+8, 这里不传是服务器时间，手动设置为东八区时间，这里传入了，是业务时间，业务时间录入的都是东八区时间。
+        const timezoneOffset = 8 * 60; // 将小时转换为分钟
+        this.#date = t ? new Date(t) : new Date(new Date().getTime() + (timezoneOffset * 60000))
+        // this.#date = t ? new Date(t) : new Date()
     }
 
     get date() {
