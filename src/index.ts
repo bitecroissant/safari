@@ -1,3 +1,27 @@
+const rejectMsgList = [
+	"Hit the road, Jack!",
+	"Take a hike!",
+	"Beat it!",
+	"Scram!",
+	"Get out of Dodge!",
+	"Vamoose!",
+	"Buzz off!",
+	"Catch you later, alligator!",
+	"Time to fly, bye-bye!",
+	"See you in the funny papers!",
+	"Don't let the door hit you on the way out!",
+	"You're like a bad penny; I can't get rid of you!",
+	"I think you've overstayed your welcome.",
+	"Why don't you go and find someone else to bother?",
+	"I'm about to turn into a pumpkin, so you'd better scram!",
+]
+
+const DOMAIN = "gualand.cc"
+
+function getRandomInt(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 type EventDatesType = {
 	happenAt: string
 	eventName: string
@@ -8,6 +32,11 @@ type SolarTermType = {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		const origin = request.headers.get('Origin')
+		console.log(origin)
+		if (!origin || !origin.endsWith(DOMAIN)) {
+			return new Response(rejectMsgList[getRandomInt(0, rejectMsgList.length)], { status: 403 });
+		}
 		const parsedUrl = new URL(request.url);
 		const path = parsedUrl.pathname;
 
