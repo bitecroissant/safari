@@ -27,7 +27,13 @@ insert into SolarTerms (id, name, enName, meteorologicalChanges, relatedVerses, 
 
 DROP TABLE IF EXISTS EventDates;
 CREATE TABLE IF NOT EXISTS EventDates (id INTEGER PRIMARY KEY, gmtCreate TEXT, gmtModified TEXT, isDeleted INTEGER, eventCode TEXT, eventName TEXT, happenAt TEXT, type TEXT);
-INSERT INTO EventDates (id, isDeleted, eventCode, eventName, happenAt, type) VALUES (1, 0, 'not_use_in_solar_term', '小雪', '2024-11-21T16:00:00.000Z', 'solar_term'), (2, 0, 'not_use_in_solar_term', '大雪', '2024-12-05T16:00:00.000Z', 'solar_term'), (3, 1, 'not_use_in_solar_term', '呱呱', '2024-12-05T16:00:00.000Z', 'solar_term'), (4, NULL, 'not_use_in_solar_term', '呱呱x2', '2024-12-05T16:00:00.000Z', 'solar_term'), (5, 0, 'guagualifa', '瓜瓜理发', '2024-12-05T16:00:00.000Z', 'normal');
+INSERT INTO EventDates (id, isDeleted, eventCode, eventName, happenAt, type) VALUES (1, 0, 'not_use_in_solar_term', '小雪', '2024-11-22', 'solar_term')
+,(3, 1, 'not_use_in_solar_term', '呱呱', '2024-12-05T16:00:00.000Z', 'solar_term')
+,(4, NULL, 'not_use_in_solar_term', '呱呱x2', '2024-12-05T16:00:00.000Z', 'solar_term')
+,(5, 0, 'guagualifa', '瓜瓜理发', '2024-12-05T16:00:00.000Z', 'normal')
+,(6, 0, 'guagualifa', '瓜瓜理发', '2024-12-05T16:00:00.000Z', 'normal')
+,(7, 0, 'not_use_in_solar_term', '冬至', '2024-12-21', 'solar_term')
+,(2, 0, 'not_use_in_solar_term', '大雪', '2024-12-06', 'solar_term');
 
 DROP TABLE IF EXISTS PoetryLines;
 CREATE TABLE IF NOT EXISTS PoetryLines (id INTEGER PRIMARY KEY, gmtCreate TEXT, gmtModified TEXT, isDeleted INTEGER, line TEXT, author TEXT, dynasty TEXT, title TEXT, show_date TEXT);
