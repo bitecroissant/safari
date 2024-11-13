@@ -1,70 +1,62 @@
-const rejectMsgList = [
-	"Hit the road, Jack!",
-	"Take a hike!",
-	"Beat it!",
-	"Scram!",
-	"Get out of Dodge!",
-	"Vamoose!",
-	"Buzz off!",
-	"Catch you later, alligator!",
-	"Time to fly, bye-bye!",
-	"See you in the funny papers!",
-	"Don't let the door hit you on the way out!",
-	"You're like a bad penny; I can't get rid of you!",
-	"I think you've overstayed your welcome.",
-	"Why don't you go and find someone else to bother?",
-	"I'm about to turn into a pumpkin, so you'd better scram!",
-]
+import { defaultResponse, responseForbidden } from "./lib/helpers";
+import { Time, time } from "./lib/time";
+import { getPoetryLine } from "./modules/poetryLines";
+import { getNextSolarTerms } from "./modules/solarTerms";
+
 
 const DOMAIN = "gualand.cc"
-
-function getRandomInt(min: number, max: number) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-type EventDatesType = {
-	happenAt: string
-	eventName: string
-}
-type SolarTermType = {
-	name: string
-}
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const origin = request.headers.get('Origin')
-		console.log(origin)
+		// 推送前打开下面注释
 		if (!origin || !origin.endsWith(DOMAIN)) {
-			return new Response(rejectMsgList[getRandomInt(0, rejectMsgList.length)], { status: 403 });
+			return responseForbidden()
 		}
+
 		const parsedUrl = new URL(request.url);
 		const path = parsedUrl.pathname;
 
-		switch (path) {
-			case '/solarTerms/next':
-				const today = new Date();
-				const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND type = 'solar_term' "
-				const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesType>()
-				const filteredEventDates = results.filter(e => new Date(e.happenAt) >= today)
-				filteredEventDates.sort((a, b) => new Date(a.happenAt) as any - (new Date(b.happenAt) as any))
-				const closestEventDate = filteredEventDates[0];
-				const daysBetween = Math.ceil((new Date(closestEventDate.happenAt) as any - (today as any)) / (1000 * 60 * 60 * 24));
+		const method = request.method
 
-				const querySolarTerm = "SELECT * FROM SolarTerms WHERE name = ? "
-				const { results: solarTerms } = await env.D1_DB_CONNECTION.prepare(querySolarTerm).bind(closestEventDate.eventName).all<SolarTermType>()
-				const solarTerm = solarTerms[0]
-				return new Response(JSON.stringify({ ...closestEventDate, daysBetween, solarTerm }), {
-					headers: {
-						'Content-Type': 'application/json; charset=utf-8',
-						'Access-Control-Allow-Origin': '*',
-						// 允许的HTTP方法
-						'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-						// 允许的HTTP头部
-						'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
-					}
-				});
+		switch (path) {
+			// 获取下一个节气信息，目前主要是 iphone 快捷方式在用
+			case '/solar_terms/next':
+				return await getNextSolarTerms(env, request, ctx);
+			case '/poetry_line':
+				if (method === 'GET') {
+					// 随机读取一行诗句
+					return await getPoetryLine(env, request, ctx);
+				} else if (method === 'POST') {
+					// 录入一行诗句
+					return await getNextSolarTerms(env, request, ctx);
+				} else if (method === 'PATCH') {
+					// 指定一行诗句出现时间
+					return await getNextSolarTerms(env, request, ctx);
+				}
+				break
+			case '/event_dates':
+				if (method === 'GET') {
+					// 获取所有生效的事件日期
+					return await getPoetryLine(env, request, ctx);
+				}
+				break
+			case '/event_date':
+				if (method === 'POST') {
+					// 录入一个事件日期
+					return await getNextSolarTerms(env, request, ctx);
+				} else if (method === 'PATCH') {
+					// 更新一个事件日期
+					return await getNextSolarTerms(env, request, ctx);
+				} else if (method === 'DELETE') {
+					// 删除一个事件日期
+					return await getNextSolarTerms(env, request, ctx);
+				}
+				break
 			default:
-				return new Response('Hello World!');
+				return defaultResponse()
 		}
+		return defaultResponse();
 	},
 } satisfies ExportedHandler<Env>;
+
