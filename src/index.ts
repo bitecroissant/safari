@@ -23,6 +23,12 @@ export default {
 			// 获取下一个节气信息，目前主要是 iphone 快捷方式在用
 			case '/solar_terms/next':
 				return await getNextSolarTerms(env, request, ctx);
+			case '/poetry_lines':
+				if (method === 'GET') {
+					// 获取所有诗句
+					return await getPoetryLine(env, request, ctx);
+				}
+				break
 			case '/poetry_line':
 				if (method === 'GET') {
 					// 随机读取一行诗句
@@ -32,6 +38,9 @@ export default {
 					return await getNextSolarTerms(env, request, ctx);
 				} else if (method === 'PATCH') {
 					// 指定一行诗句出现时间
+					return await getNextSolarTerms(env, request, ctx);
+				} else if (method === 'DELETE') {
+					// 删除一行诗句
 					return await getNextSolarTerms(env, request, ctx);
 				}
 				break

@@ -13,7 +13,7 @@ type SolarTermType = {
 export async function getNextSolarTerms(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	const today = time()
 	today.removeTime()
-	const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND type = 'solar_term' ";
+	const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND `group` = 'solar_term' ";
 	const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesType>();
 	const filteredEventDates = results.filter(e => time(e.happenAt).notBefore(today.date));
 	filteredEventDates.sort((a, b) => time(a.happenAt).timestamp - time(b.happenAt).timestamp);

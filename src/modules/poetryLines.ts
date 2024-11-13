@@ -14,7 +14,7 @@ type PoetryLinesType = {
 
 // 随机读取一行诗句
 export async function getPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
-	const today = time()
+	const today = time('2000-1-1')
 	const todayFormattedStr = today.format()
 	let line: PoetryLinesType
 	const query = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0 AND `show_date` = ?";
