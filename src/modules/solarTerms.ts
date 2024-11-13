@@ -11,7 +11,7 @@ type SolarTermType = {
 
 // 获取下一个节气信息，目前主要是 iphone 快捷方式在用
 export async function getNextSolarTerms(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
-	const today = time('2024/12/12 08:35:00')
+	const today = time('2024/11/22 08:35:00')
 	today.removeTime()
 	const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND type = 'solar_term' ";
 	const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesType>();
