@@ -1,5 +1,5 @@
 import { defaultResponse } from "./lib/helpers";
-import { createPoetryLine, getPoetryLine } from "./modules/poetryLines";
+import { createPoetryLine, getPoetryLine, listPoetryLines } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
 const DOMAIN = "gualand.cc"
@@ -25,7 +25,7 @@ export default {
 			case '/poetry_lines':
 				if (method === 'GET') {
 					// 获取所有诗句
-					return await getPoetryLine(env, request, ctx);
+					return await listPoetryLines(env, request, ctx);
 				}
 				break
 			case '/poetry_line':

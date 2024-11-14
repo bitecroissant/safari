@@ -12,6 +12,25 @@ type PoetryLinesType = {
 	show_date: string
 }
 
+// 获取所有诗句
+export async function listPoetryLines(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
+	const query = "SELECT * FROM PoetryLines ORDER BY `id` DESC";
+	const { results } = await env.D1_DB_CONNECTION.prepare(query).all<PoetryLinesType>();
+	console.log('results')
+	console.log(JSON.stringify(results))
+
+	return new Response(JSON.stringify(results), {
+		headers: {
+			'Content-Type': 'application/json; charset=utf-8',
+			'Access-Control-Allow-Origin': '*',
+			// 允许的HTTP方法
+			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+			// 允许的HTTP头部
+			'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+		}
+	});
+}
+
 // 录入一行诗句
 export async function createPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	const createForm = await request.json<PoetryLinesType>()
