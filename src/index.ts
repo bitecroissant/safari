@@ -18,6 +18,20 @@ export default {
 
 		const method = request.method
 
+		if (method === 'OPTIONS') {
+			return new Response(null, {
+				status: 204, // No Content
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8',
+					'Access-Control-Allow-Origin': '*',
+					// 允许的HTTP方法
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+					// 允许的HTTP头部
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+				}
+			})
+		}
+
 		switch (path) {
 			// 获取下一个节气信息，目前主要是 iphone 快捷方式在用
 			case '/solar_terms/next':

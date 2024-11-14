@@ -95,7 +95,6 @@ export async function listPoetryLines(env: Env, request: Request<unknown, Incomi
 // 录入一行诗句
 export async function createPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
-		console.log('run')
 		const createForm = await request.json<PoetryLinesType>()
 		notEmptyObject(createForm, "params could not null")
 		const { line, author, dynasty, title, showDate } = createForm
