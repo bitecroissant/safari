@@ -1,4 +1,5 @@
 import { defaultResponse } from "./lib/helpers";
+import { createEventDate, deleteEventDates, listEventDates, updateEventDate } from "./modules/eventDates";
 import { createPoetryLine, deletePoetryLine, getPoetryLine, listPoetryLines, updatePoetryLine } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
@@ -45,19 +46,19 @@ export default {
 			case '/event_dates':
 				if (method === 'GET') {
 					// 获取所有生效的事件日期
-					return await getPoetryLine(env, request, ctx);
+					return await listEventDates(env, request, ctx);
 				}
 				break
 			case '/event_date':
 				if (method === 'POST') {
 					// 录入一个事件日期
-					return await getNextSolarTerms(env, request, ctx);
+					return await createEventDate(env, request, ctx);
 				} else if (method === 'PATCH') {
 					// 更新一个事件日期
-					return await getNextSolarTerms(env, request, ctx);
+					return await updateEventDate(env, request, ctx);
 				} else if (method === 'DELETE') {
 					// 删除一个事件日期
-					return await getNextSolarTerms(env, request, ctx);
+					return await deleteEventDates(env, request, ctx);
 				}
 				break
 			default:
