@@ -12,6 +12,27 @@ type PoetryLinesType = {
 	show_date: string
 }
 
+// 录入一行诗句
+export async function createPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
+	const createForm = await request.json<PoetryLinesType>()
+	const { line, author, dynasty, title, show_date } = createForm
+	const insertSql = "INSERT INTO PoetryLines (isDeleted, line, author, dynasty, title, show_date) VALUES (0, ?, ?, ?, ?, ?)"
+	const params = [ line, author, dynasty, title, show_date ]
+	const result = await env.D1_DB_CONNECTION.prepare(insertSql).bind(...params).run()
+
+	return new Response(JSON.stringify({ result }), {
+		status: 201, // Created
+		headers: {
+			'Content-Type': 'application/json; charset=utf-8',
+			'Access-Control-Allow-Origin': '*',
+			// 允许的HTTP方法
+			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+			// 允许的HTTP头部
+			'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+		}
+	});
+}
+
 // 随机读取一行诗句
 export async function getPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	const today = time()

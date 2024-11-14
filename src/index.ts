@@ -1,6 +1,5 @@
-import { defaultResponse, responseForbidden } from "./lib/helpers";
-import { Time, time } from "./lib/time";
-import { getPoetryLine } from "./modules/poetryLines";
+import { defaultResponse } from "./lib/helpers";
+import { createPoetryLine, getPoetryLine } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
 const DOMAIN = "gualand.cc"
@@ -35,7 +34,7 @@ export default {
 					return await getPoetryLine(env, request, ctx);
 				} else if (method === 'POST') {
 					// 录入一行诗句
-					return await getNextSolarTerms(env, request, ctx);
+					return await createPoetryLine(env, request, ctx);
 				} else if (method === 'PATCH') {
 					// 指定一行诗句出现时间
 					return await getNextSolarTerms(env, request, ctx);
