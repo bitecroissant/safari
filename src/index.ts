@@ -1,5 +1,5 @@
 import { defaultResponse } from "./lib/helpers";
-import { createPoetryLine, getPoetryLine, listPoetryLines } from "./modules/poetryLines";
+import { createPoetryLine, getPoetryLine, listPoetryLines, updatePoetryLine } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
 const DOMAIN = "gualand.cc"
@@ -36,8 +36,8 @@ export default {
 					// 录入一行诗句
 					return await createPoetryLine(env, request, ctx);
 				} else if (method === 'PATCH') {
-					// 指定一行诗句出现时间
-					return await getNextSolarTerms(env, request, ctx);
+					// 指定一行诗句出现时间、恢复一个删除的诗句、修改诗句的详细信息
+					return await updatePoetryLine(env, request, ctx);
 				} else if (method === 'DELETE') {
 					// 删除一行诗句
 					return await getNextSolarTerms(env, request, ctx);
