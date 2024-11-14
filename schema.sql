@@ -38,6 +38,7 @@ INSERT INTO EventDates (isDeleted, `group`, eventName, happenAt) VALUES (1, '测
 ,(0, '瓜', '瓜瓜换床单', '2024-03-01')
 ,(0, '陆', '陆陆理发', '2024-11-04')
 ,(0, '陆', '陆陆换床单', '2024-11-04')
+,(0, '田', '去迪士尼', '2024-11-30')
 ,(0, '田', '拖地', '2024-11-08');
 
 DROP TABLE IF EXISTS PoetryLines;
