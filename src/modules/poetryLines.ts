@@ -1,4 +1,3 @@
-import { ValidationError } from "../lib/errors"
 import { handleError } from "../lib/handleErrors"
 import { time } from "../lib/time"
 import { notBlankStr, notEmptyObject } from "../lib/validators"
