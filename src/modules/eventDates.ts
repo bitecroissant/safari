@@ -30,9 +30,8 @@ export async function listEventDates(env: Env, request: Request<unknown, Incomin
 // 删除一行诗句
 export async function deleteEventDates(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
-		const updateForm = await request.json<EventDatesTypes>()
-		notEmptyObject(updateForm, "params could not null")
-		const { id } = updateForm
+		const url = new URL(request.url)
+		const id = url.searchParams.get('id')
 		notBlankStr(id, "id could not be blank")
 		const query = "SELECT * FROM EventDates WHERE `id` = ?";
 		const { results: eventDates } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<EventDatesTypes>();

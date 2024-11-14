@@ -18,9 +18,8 @@ type PoetryLinesType = {
 // 删除一行诗句
 export async function deletePoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
-		const updateForm = await request.json<PoetryLinesType>()
-		notEmptyObject(updateForm, "params could not null")
-		const { id} = updateForm
+		const url = new URL(request.url);
+		const id = url.searchParams.get('id')
 		notBlankStr(id, "id could not be blank")
 		const query = "SELECT * FROM PoetryLines WHERE `id` = ?";
 		const { results: lines } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<PoetryLinesType>();
@@ -59,7 +58,7 @@ export async function updatePoetryLine(env: Env, request: Request<unknown, Incom
 		notEmptyObject(lines, "not found line")
 
 		const updateSql = "UPDATE PoetryLines SET isDeleted = ?, line = ? , author = ? , dynasty = ?, title = ? , show_date = ? WHERE `id` = ?"
-		const params = [ isDeleted || 0, line, author, dynasty, title, show_date, id ]
+		const params = [isDeleted || 0, line, author, dynasty, title, show_date, id]
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
