@@ -56,7 +56,7 @@ export async function updatePoetryLine(env: Env, request: Request<unknown, Incom
 		const { results: lines } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<PoetryLinesType>();
 		notEmptyObject(lines, "not found line")
 
-		const updateSql = "UPDATE PoetryLines SET isDeleted = ?, line = ? , author = ? , dynasty = ?, title = ? , show_date = ? WHERE `id` = ?"
+		const updateSql = "UPDATE PoetryLines SET isDeleted = ?, line = ? , author = ? , dynasty = ?, title = ? , showDate = ? WHERE `id` = ?"
 		const params = [isDeleted || 0, line, author, dynasty, title, showDate, id]
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
@@ -95,10 +95,11 @@ export async function listPoetryLines(env: Env, request: Request<unknown, Incomi
 // 录入一行诗句
 export async function createPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		console.log('run')
 		const createForm = await request.json<PoetryLinesType>()
 		notEmptyObject(createForm, "params could not null")
 		const { line, author, dynasty, title, showDate } = createForm
-		const insertSql = "INSERT INTO PoetryLines (isDeleted, line, author, dynasty, title, show_date) VALUES (0, ?, ?, ?, ?, ?)"
+		const insertSql = "INSERT INTO PoetryLines (isDeleted, line, author, dynasty, title, showDate) VALUES (0, ?, ?, ?, ?, ?)"
 		const params = [line, author, dynasty, title, showDate]
 		const result = await env.D1_DB_CONNECTION.prepare(insertSql).bind(...params).run()
 
@@ -123,7 +124,7 @@ export async function getPoetryLine(env: Env, request: Request<unknown, Incoming
 	const today = time()
 	const todayFormattedStr = today.format()
 	let line: PoetryLinesType
-	const query = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0 AND `show_date` = ?";
+	const query = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0 AND `showDate` = ?";
 	const { results } = await env.D1_DB_CONNECTION.prepare(query).bind(todayFormattedStr).all<PoetryLinesType>();
 	if (results && results.length > 0) {
 		line = results[0]
