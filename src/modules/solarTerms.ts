@@ -18,12 +18,6 @@ export async function getNextSolarTerms(env: Env, request: Request<unknown, Inco
 	const filteredEventDates = results.filter(e => time(e.happenAt).notBefore(today.date));
 	filteredEventDates.sort((a, b) => time(a.happenAt).timestamp - time(b.happenAt).timestamp);
 	const closestEventDate = filteredEventDates[0];
-	// console.log('JSON.stringify(closestEventDate)')
-	// console.log(JSON.stringify(closestEventDate))
-	// console.log("today.format('yyyy/MM/dd HH:mm:ss:fff')")
-	// console.log(today.format('yyyy/MM/dd HH:mm:ss:fff'))
-	// console.log("time(closestEventDate.happenAt).format('yyyy/MM/dd HH:mm:ss:fff')")
-	// console.log(time(closestEventDate.happenAt).format('yyyy/MM/dd HH:mm:ss:fff'))
 	const daysBetween = time(closestEventDate.happenAt).calcNaturalDaysBetween(today);
 
 	const querySolarTerm = "SELECT * FROM SolarTerms WHERE name = ? ";

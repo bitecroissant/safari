@@ -6,3 +6,10 @@ export const notEmptyObject = (params: any, msg: string) => {
     }
     throw validationError(msg)
 }
+
+export const notBlankStr = (str: any, msg: string) => {
+    if (str !== null && str !== undefined && typeof str === 'string' && str !== '') {
+        return
+    }
+    throw validationError(msg)
+}

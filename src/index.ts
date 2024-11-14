@@ -1,5 +1,5 @@
 import { defaultResponse } from "./lib/helpers";
-import { createPoetryLine, getPoetryLine, listPoetryLines, updatePoetryLine } from "./modules/poetryLines";
+import { createPoetryLine, deletePoetryLine, getPoetryLine, listPoetryLines, updatePoetryLine } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
 const DOMAIN = "gualand.cc"
@@ -8,7 +8,6 @@ export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		// // 如果需要跨域控制 推送前打开下面注释
 		// const origin = request.headers.get('Origin')
-		// console.log(origin)
 		// if (!origin || !origin.endsWith(DOMAIN)) {
 		// 	return responseForbidden()
 		// }
@@ -40,7 +39,7 @@ export default {
 					return await updatePoetryLine(env, request, ctx);
 				} else if (method === 'DELETE') {
 					// 删除一行诗句
-					return await getNextSolarTerms(env, request, ctx);
+					return await deletePoetryLine(env, request, ctx);
 				}
 				break
 			case '/event_dates':

@@ -31,10 +31,10 @@ export const serverErrorMsgList = [
 
 export const handleError = (err: unknown) => {
     if (err instanceof ValidationError) {
-        console.log('run')
         return responseBadRequest((err as Error).message)
     }
-    return responseInternalServerError(serverErrorMsgList[getRandomInt(0, serverErrorMsgList.length - 1)])
+    throw err;
+    // return responseInternalServerError(serverErrorMsgList[getRandomInt(0, serverErrorMsgList.length - 1)])
 }
 
 export function responseInternalServerError(msg: string): Response | PromiseLike<Response> {
