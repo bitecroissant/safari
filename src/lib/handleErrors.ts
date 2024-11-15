@@ -42,7 +42,6 @@ export function responseInternalServerError(msg: string): Response | PromiseLike
 }
 
 export function responseBadRequest(msg: string): Response | PromiseLike<Response> {
-    console.log(msg)
     return new Response(JSON.stringify({ msg }), {
         status: 400,
         headers: {
