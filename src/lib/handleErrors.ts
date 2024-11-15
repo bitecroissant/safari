@@ -38,13 +38,24 @@ export const handleError = (err: unknown) => {
 }
 
 export function responseInternalServerError(msg: string): Response | PromiseLike<Response> {
-    return new Response(msg, { status: 500 });
+    return new Response(JSON.stringify({ msg }), { status: 500 });
 }
 
 export function responseBadRequest(msg: string): Response | PromiseLike<Response> {
-    return new Response(msg, { status: 400 });
+    console.log(msg)
+    return new Response(JSON.stringify({ msg }), {
+        status: 400,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Access-Control-Allow-Origin': '*',
+            // 允许的HTTP方法
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            // 允许的HTTP头部
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+        }
+    })
 }
 
 export function responseForbidden(): Response | PromiseLike<Response> {
-    return new Response(rejectMsgList[getRandomInt(0, rejectMsgList.length - 1)], { status: 403 });
+    return new Response(JSON.stringify({ msg: rejectMsgList[getRandomInt(0, rejectMsgList.length - 1)] }), { status: 403 });
 }
