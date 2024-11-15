@@ -98,6 +98,7 @@ export async function createPoetryLine(env: Env, request: Request<unknown, Incom
 		const createForm = await request.json<PoetryLinesType>()
 		notEmptyObject(createForm, "params could not null")
 		const { line, author, dynasty, title, showDate } = createForm
+		notBlankStr(line, "line could not be blank")
 		const insertSql = "INSERT INTO PoetryLines (isDeleted, line, author, dynasty, title, showDate) VALUES (0, ?, ?, ?, ?, ?)"
 		const params = [line, author, dynasty, title, showDate]
 		const result = await env.D1_DB_CONNECTION.prepare(insertSql).bind(...params).run()
