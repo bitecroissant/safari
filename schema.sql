@@ -45,4 +45,8 @@ DROP TABLE IF EXISTS PoetryLines;
 CREATE TABLE IF NOT EXISTS PoetryLines (id INTEGER PRIMARY KEY, gmtCreate TEXT, gmtModified TEXT, isDeleted INTEGER, line TEXT, author TEXT, dynasty TEXT, title TEXT, showDate TEXT, createBy TEXT);
 INSERT INTO PoetryLines (isDeleted, line, author, dynasty, title, showDate) VALUES (0, '人间何所以，观风与月舒', '', '', '网文', '')
 ,(0, '冬宜密雪，有碎玉聲', '王禹偁 字 元之', '北宋', '黄冈竹楼记', '2024-11-14')
-,(0, '人生海海，山山而川，不过尔尔', '麦家', '', '人生海海', '');
+,(0, '人生海海，山山而川，不过尔尔', '麦家', '', '人生海海', '')
+,(0, '烟雨海棠花，春夜沈沈酌', '韩流', '宋', '算子·初十日海棠宋十一哥家', '')
+,(0, '澹澹催诗雨，遲遲入梦云', '元好问', '金朝', '南柯子·粉澹梨花瘦', '2024-11-15')
+,(0, '片云头上黑，应是雨催诗', '杜甫', '唐朝', '陪诸贵公子丈八沟携妓纳凉晚际遇雨二首', '2024-11-16')
+,(0, '空山新雨后，天气晚来秋', '王维', '唐', '山居秋暝', '2024-11-17');

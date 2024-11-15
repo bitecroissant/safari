@@ -146,5 +146,3 @@ export async function getPoetryLine(env: Env, request: Request<unknown, Incoming
 		}
 	});
 }
-
-
