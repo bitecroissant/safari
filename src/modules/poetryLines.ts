@@ -25,12 +25,30 @@ export async function deletePoetryLine(env: Env, request: Request<unknown, Incom
 		const { results: lines } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<PoetryLinesType>();
 		notEmptyObject(lines, "not found line")
 
+		const kill = url.searchParams.get('kill')
+		if (kill) {
+			const updateSql = "DELETE FROM PoetryLines WHERE `id` = ?"
+			const params = [id]
+			const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
+			return new Response(JSON.stringify({ result }), {
+				status: 200,	
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8',
+					'Access-Control-Allow-Origin': '*',
+					// 允许的HTTP方法
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+					// 允许的HTTP头部
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+				}
+			});
+		}
+
 		const updateSql = "UPDATE PoetryLines SET isDeleted = 1 WHERE `id` = ?"
 		const params = [id]
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
-			status: 201, // Created
+			status: 200,
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
 				'Access-Control-Allow-Origin': '*',
@@ -57,8 +75,8 @@ export async function updatePoetryLine(env: Env, request: Request<unknown, Incom
 		const { results: lines } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<PoetryLinesType>();
 		notEmptyObject(lines, "not found line")
 
-		const updateSql = "UPDATE PoetryLines SET isDeleted = ?, line = ? , author = ? , dynasty = ?, title = ? , showDate = ? WHERE `id` = ?"
-		const params = [isDeleted || 0, line, author, dynasty, title, showDate, id]
+		const updateSql = "UPDATE PoetryLines SET gmtModified = ?, isDeleted = ?, line = ? , author = ? , dynasty = ?, title = ? , showDate = ? WHERE `id` = ?"
+		const params = [time().format('yyyy-MM-dd HH:mm:ss fff'), isDeleted || 0, line, author, dynasty, title, showDate, id]
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
@@ -100,8 +118,8 @@ export async function createPoetryLine(env: Env, request: Request<unknown, Incom
 		notEmptyObject(createForm, "params could not null")
 		const { line, author, dynasty, title, showDate, createBy } = createForm
 		notBlankStr(line, "line could not be blank")
-		const insertSql = "INSERT INTO PoetryLines (isDeleted, line, author, dynasty, title, showDate, createBy) VALUES (0, ?, ?, ?, ?, ?, ?)"
-		const params = [line, author, dynasty, title, showDate, createBy || 'gua']
+		const insertSql = "INSERT INTO PoetryLines (gmtCreate, gmtModified, isDeleted, line, author, dynasty, title, showDate, createBy) VALUES (?, ?, 0, ?, ?, ?, ?, ?, ?)"
+		const params = [time().format('yyyy-MM-dd HH:mm:ss fff'), time().format('yyyy-MM-dd HH:mm:ss fff'), line, author, dynasty, title, showDate, createBy || 'gua']
 		const result = await env.D1_DB_CONNECTION.prepare(insertSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
@@ -132,7 +150,10 @@ export async function getPoetryLine(env: Env, request: Request<unknown, Incoming
 	if (results && results.length > 0) {
 		poetryLine = results[0]
 		if (results.length > 0) {
-			console.log(JSON.stringify(results))
+			const filterCreatorItemList = results.filter(items => items.createBy === 'lu')
+			if (filterCreatorItemList && filterCreatorItemList.length > 0) {
+				poetryLine = filterCreatorItemList[0]
+			}
 		}
 	} else {
 		const secondQuery = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0 AND `showDate` = '' ORDER BY `id` DESC";
@@ -142,7 +163,7 @@ export async function getPoetryLine(env: Env, request: Request<unknown, Incoming
 		if (poetryLine) {
 			const { id, line, author, dynasty, title, showDate, isDeleted } = poetryLine
 			const updateSql = "UPDATE PoetryLines SET gmtModified = ?, showDate = ? WHERE `id` = ?"
-			const params = [time().timestamp, today.format(), id]
+			const params = [time().format('yyyy-MM-dd HH:mm:ss fff'), today.format(), id]
 			const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 		}
 	}

@@ -25,7 +25,7 @@ export default {
 					'Content-Type': 'application/json; charset=utf-8',
 					'Access-Control-Allow-Origin': '*',
 					// 允许的HTTP方法
-					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
 					// 允许的HTTP头部
 					'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
 				}
