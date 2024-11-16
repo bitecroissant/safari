@@ -120,22 +120,34 @@ export async function createPoetryLine(env: Env, request: Request<unknown, Incom
 	}
 }
 
-// 随机读取一行诗句
+// 随机读取一行诗句 先查今天有没有指定
 export async function getPoetryLine(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
-	const today = time()
+	const url = new URL(request.url);
+	const showDate = url.searchParams.get('showDate')
+	let today = showDate ? time(showDate) : time()
 	const todayFormattedStr = today.format()
-	let line: PoetryLinesType
+	let poetryLine: PoetryLinesType
 	const query = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0 AND `showDate` = ?";
 	const { results } = await env.D1_DB_CONNECTION.prepare(query).bind(todayFormattedStr).all<PoetryLinesType>();
 	if (results && results.length > 0) {
-		line = results[0]
+		poetryLine = results[0]
+		if (results.length > 0) {
+			console.log(JSON.stringify(results))
+		}
 	} else {
-		const secondQuery = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0  ORDER BY `id` DESC";
+		const secondQuery = "SELECT * FROM PoetryLines WHERE `isDeleted` = 0 AND `showDate` = '' ORDER BY `id` DESC";
 		const { results: secondResults } = await env.D1_DB_CONNECTION.prepare(secondQuery).all<PoetryLinesType>();
-		line = secondResults[0]
+		poetryLine = secondResults[0]
+		// 反向更新
+		if (poetryLine) {
+			const { id, line, author, dynasty, title, showDate, isDeleted } = poetryLine
+			const updateSql = "UPDATE PoetryLines SET gmtModified = ?, showDate = ? WHERE `id` = ?"
+			const params = [time().timestamp, today.format(), id]
+			const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
+		}
 	}
 
-	return new Response(JSON.stringify(line), {
+	return new Response(JSON.stringify(poetryLine), {
 		headers: {
 			'Content-Type': 'application/json; charset=utf-8',
 			'Access-Control-Allow-Origin': '*',
