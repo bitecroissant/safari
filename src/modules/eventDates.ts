@@ -1,4 +1,5 @@
 import { handleError } from "../lib/handleErrors"
+import { time } from "../lib/time"
 import { notBlankStr, notEmptyObject } from "../lib/validators"
 
 type EventDatesTypes = {
@@ -11,7 +12,7 @@ type EventDatesTypes = {
 	happenAt: string
 }
 
-// 获取所有时间日期
+// 获取所有事件日期
 export async function listEventDates(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	const query = "SELECT * FROM EventDates ORDER BY `id` DESC";
 	const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesTypes>();
@@ -27,7 +28,7 @@ export async function listEventDates(env: Env, request: Request<unknown, Incomin
 	});
 }
 
-// 删除一行诗句
+// 删除一行事件日期
 export async function deleteEventDates(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
 		const url = new URL(request.url)
@@ -114,13 +115,13 @@ export async function createEventDate(env: Env, request: Request<unknown, Incomi
 				if (historyList && historyList.length > 0) {
 					const historyIdList = historyList.map(i => i.id)
 					const deleteHistoryPlaceHolder = historyIdList.map(() => '?').join(', ')
-					const deleteHistorySql = `UPDATE EventDates SET \`isDeleted\` = 1 WHERE id in (${deleteHistoryPlaceHolder})`
-					await env.D1_DB_CONNECTION.prepare(deleteHistorySql).bind(...historyIdList).run()
+					const deleteHistorySql = `UPDATE EventDates SET \`gmtModified\` = ?, \`isDeleted\` = 1 WHERE id in (${deleteHistoryPlaceHolder})`
+					await env.D1_DB_CONNECTION.prepare(deleteHistorySql).bind(time().format('yyyy-MM-dd HH:mm:ss fff'), ...historyIdList).run()
 				}
 		}
 
-		const insertSql = "INSERT INTO EventDates (isDeleted,`group`, eventName, happenAt) VALUES (0, ?, ?, ?)"
-		const params = [group, eventName, happenAt]
+		const insertSql = "INSERT INTO EventDates (isDeleted,`group`, eventName, happenAt, gmtCreate, gmtModified) VALUES (0, ?, ?, ?, ?, ?)"
+		const params = [group, eventName, happenAt, time().format('yyyy-MM-dd HH:mm:ss fff'), time().format('yyyy-MM-dd HH:mm:ss fff')]
 		const result = await env.D1_DB_CONNECTION.prepare(insertSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
