@@ -38,8 +38,26 @@ export async function deleteEventDates(env: Env, request: Request<unknown, Incom
 		const { results: eventDates } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<EventDatesTypes>();
 		notEmptyObject(eventDates, "not found event dates")
 
-		const updateSql = "UPDATE EventDates SET isDeleted = 1 WHERE `id` = ?"
-		const params = [id]
+		const kill = url.searchParams.get('kill')
+		if (kill) {
+			const updateSql = "DELETE FROM EventDates WHERE `id` = ?"
+			const params = [id]
+			const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
+			return new Response(JSON.stringify({ result }), {
+				status: 200,	
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8',
+					'Access-Control-Allow-Origin': '*',
+					// 允许的HTTP方法
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+					// 允许的HTTP头部
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+				}
+			});
+		}
+
+		const updateSql = "UPDATE EventDates SET gmtModified = ?, isDeleted = 1 WHERE `id` = ?"
+		const params = [time().format('yyyy-MM-dd HH:mm:ss fff'), id]
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
