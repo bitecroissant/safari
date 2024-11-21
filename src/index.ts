@@ -1,5 +1,6 @@
 import { defaultResponse } from "./lib/helpers";
 import { createEventDate, deleteEventDates, listEventDates, updateEventDate } from "./modules/eventDates";
+import { createKnowledgeRecords, deleteKnowledgeRecord, listKnowledgeRecords, updateKnowledgeRecord } from "./modules/knowledgeRecords";
 import { createPoetryLine, deletePoetryLine, getPoetryLine, listPoetryLines, updatePoetryLine } from "./modules/poetryLines";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
@@ -73,6 +74,20 @@ export default {
 				} else if (method === 'DELETE') {
 					// 删除一个事件日期
 					return await deleteEventDates(env, request, ctx);
+				}
+				break
+			case '/knowledge_records':
+				if (method === 'GET') {
+					return await listKnowledgeRecords(env, request, ctx);
+				}
+				break
+			case '/knowledge_record':
+				if (method === 'POST') {
+					return await createKnowledgeRecords(env, request, ctx);
+				} else if (method === 'PATCH') {
+					return await updateKnowledgeRecord(env, request, ctx);
+				} else if (method === 'DELETE') {
+					return await deleteKnowledgeRecord(env, request, ctx);
 				}
 				break
 			default:
