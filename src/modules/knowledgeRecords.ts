@@ -1,3 +1,4 @@
+import { jwtAuth } from "../lib/auth/jwtHelpers"
 import { handleError } from "../lib/handleErrors"
 import { time } from "../lib/time"
 import { notBlankStr, notEmptyObject } from "../lib/validators"
@@ -16,6 +17,7 @@ type KnowledgeRecords = {
 
 export async function deleteKnowledgeRecord(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		await jwtAuth(env, request)
 		const url = new URL(request.url);
 		const id = url.searchParams.get('id')
 		notBlankStr(id, "id could not be blank")
@@ -29,7 +31,7 @@ export async function deleteKnowledgeRecord(env: Env, request: Request<unknown, 
 			const params = [id]
 			const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 			return new Response(JSON.stringify({ result }), {
-				status: 200,	
+				status: 200,
 				headers: {
 					'Content-Type': 'application/json; charset=utf-8',
 					'Access-Control-Allow-Origin': '*',
@@ -63,6 +65,7 @@ export async function deleteKnowledgeRecord(env: Env, request: Request<unknown, 
 
 export async function updateKnowledgeRecord(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		await jwtAuth(env, request)
 		const updateForm = await request.json<KnowledgeRecords>()
 		notEmptyObject(updateForm, "params could not null")
 		const { id, desc, name, relatedUrl, addition, source, isDeleted } = updateForm
@@ -96,22 +99,26 @@ export async function updateKnowledgeRecord(env: Env, request: Request<unknown, 
 }
 
 export async function listKnowledgeRecords(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
-	const query = "SELECT * FROM KnowledgeRecords ORDER BY `id` DESC";
-	const { results } = await env.D1_DB_CONNECTION.prepare(query).all<KnowledgeRecords>();
-	return new Response(JSON.stringify(results), {
-		headers: {
-			'Content-Type': 'application/json; charset=utf-8',
-			'Access-Control-Allow-Origin': '*',
-			// 允许的HTTP方法
-			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-			// 允许的HTTP头部
-			'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
-		}
-	});
+	try {
+		await jwtAuth(env, request)
+		const query = "SELECT * FROM KnowledgeRecords ORDER BY `id` DESC";
+		const { results } = await env.D1_DB_CONNECTION.prepare(query).all<KnowledgeRecords>();
+		return new Response(JSON.stringify(results), {
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				// 允许的HTTP方法
+				'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+				// 允许的HTTP头部
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+			}
+		});
+	} catch (err) { return handleError(err) }
 }
 
 export async function createKnowledgeRecords(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		await jwtAuth(env, request)
 		const createForm = await request.json<KnowledgeRecords>()
 		notEmptyObject(createForm, "params could not null")
 		const { id, desc, name, relatedUrl, addition, source, isDeleted } = createForm
