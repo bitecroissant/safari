@@ -34,6 +34,7 @@ export const handleError = (err: unknown) => {
         return responseBadRequest((err as Error).message)
     }
     if (err instanceof AuthError) {
+        console.log('hi')
         return responseForbidden()
     }
     throw err;
@@ -59,5 +60,5 @@ export function responseBadRequest(msg: string): Response | PromiseLike<Response
 }
 
 export function responseForbidden(): Response | PromiseLike<Response> {
-    return new Response(JSON.stringify({ msg: rejectMsgList[getRandomInt(0, rejectMsgList.length - 1)] }), { status: 403 });
+    return new Response(JSON.stringify({ msg: '🔇 ' + rejectMsgList[getRandomInt(0, rejectMsgList.length - 1)] }), { status: 403 });
 }

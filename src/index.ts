@@ -15,13 +15,10 @@ export default {
 		// if (!origin || !origin.endsWith(DOMAIN)) {
 		// 	return responseForbidden()
 		// }
-
 		const parsedUrl = new URL(request.url);
 		const path = parsedUrl.pathname;
 
 		const method = request.method
-
-		
 
 		if (method === 'OPTIONS') {
 			return new Response(null, {
