@@ -1,3 +1,4 @@
+import { jwtAuth } from "../lib/auth/jwtHelpers"
 import { handleError } from "../lib/handleErrors"
 import { time } from "../lib/time"
 import { notBlankStr, notEmptyObject } from "../lib/validators"
@@ -14,23 +15,27 @@ type EventDatesTypes = {
 
 // 获取所有事件日期
 export async function listEventDates(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
-	const query = "SELECT * FROM EventDates ORDER BY `id` DESC";
-	const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesTypes>();
-	return new Response(JSON.stringify(results), {
-		headers: {
-			'Content-Type': 'application/json; charset=utf-8',
-			'Access-Control-Allow-Origin': '*',
-			// 允许的HTTP方法
-			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-			// 允许的HTTP头部
-			'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
-		}
-	});
+	try {
+		await jwtAuth(env, request)
+		const query = "SELECT * FROM EventDates ORDER BY `id` DESC";
+		const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesTypes>();
+		return new Response(JSON.stringify(results), {
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				// 允许的HTTP方法
+				'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+				// 允许的HTTP头部
+				'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+			}
+		});
+	} catch (err) { return handleError(err) }
 }
 
 // 删除一行事件日期
 export async function deleteEventDates(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		await jwtAuth(env, request)
 		const url = new URL(request.url)
 		const id = url.searchParams.get('id')
 		notBlankStr(id, "id could not be blank")
@@ -44,7 +49,7 @@ export async function deleteEventDates(env: Env, request: Request<unknown, Incom
 			const params = [id]
 			const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 			return new Response(JSON.stringify({ result }), {
-				status: 200,	
+				status: 200,
 				headers: {
 					'Content-Type': 'application/json; charset=utf-8',
 					'Access-Control-Allow-Origin': '*',
@@ -79,6 +84,7 @@ export async function deleteEventDates(env: Env, request: Request<unknown, Incom
 // 更新一个事件
 export async function updateEventDate(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		await jwtAuth(env, request)
 		const updateForm = await request.json<EventDatesTypes>()
 		notEmptyObject(updateForm, "params could not null")
 		const { id, group, eventName, happenAt, isDeleted } = updateForm
@@ -86,13 +92,13 @@ export async function updateEventDate(env: Env, request: Request<unknown, Incomi
 		notBlankStr(group, "group could not be blank")
 		notBlankStr(eventName, "eventName could not be blank")
 		notBlankStr(happenAt, "happenAt could not be blank")
-		
+
 		const query = "SELECT * FROM EventDates WHERE `id` = ?";
 		const { results: eventDates } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<EventDatesTypes>();
 		notEmptyObject(eventDates, "not found event dates")
 
 		const updateSql = "UPDATE EventDates SET isDeleted = ?, `group` = ? , eventName = ? , happenAt = ? WHERE `id` = ?"
-		const params = [ isDeleted || 0, group, eventName, happenAt, id ]
+		const params = [isDeleted || 0, group, eventName, happenAt, id]
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
@@ -115,6 +121,7 @@ export async function updateEventDate(env: Env, request: Request<unknown, Incomi
 // 录入一个事件日期
 export async function createEventDate(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
 	try {
+		await jwtAuth(env, request)
 		const createForm = await request.json<EventDatesTypes>()
 		notEmptyObject(createForm, "params could not null")
 		const { group, eventName, happenAt } = createForm
