@@ -34,7 +34,6 @@ export const handleError = (err: unknown) => {
         return responseBadRequest((err as Error).message)
     }
     if (err instanceof AuthError) {
-        console.log('hi')
         return responseForbidden()
     }
     throw err;
@@ -60,5 +59,15 @@ export function responseBadRequest(msg: string): Response | PromiseLike<Response
 }
 
 export function responseForbidden(): Response | PromiseLike<Response> {
-    return new Response(JSON.stringify({ msg: '🔇 ' + rejectMsgList[getRandomInt(0, rejectMsgList.length - 1)] }), { status: 403 });
+    return new Response(JSON.stringify({ msg: '🔇 ' + rejectMsgList[getRandomInt(0, rejectMsgList.length - 1)] }), {
+        status: 403,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Access-Control-Allow-Origin': '*',
+            // 允许的HTTP方法
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            // 允许的HTTP头部
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+        }
+    });
 }

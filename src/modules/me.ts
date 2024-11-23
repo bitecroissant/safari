@@ -1,11 +1,10 @@
 import { jwtAuth } from "../lib/auth/jwtHelpers"
+import { responseForbidden } from "../lib/handleErrors";
 
 // 获取登录用户
 export async function me(env: Env, request: Request<unknown, IncomingRequestCfProperties<unknown>>, ctx: ExecutionContext) {
     try {
         const userToken = await jwtAuth(env, request)
-        console.log('userToken')
-        console.log(JSON.stringify(userToken))
         return new Response(JSON.stringify(userToken), {
             // return new Response(JSON.stringify({ jwt: jwtToken }), {
             status: 201,
@@ -17,6 +16,6 @@ export async function me(env: Env, request: Request<unknown, IncomingRequestCfPr
             }
         });
     } catch (error) {
-        return new Response('Invalid Token', { status: 401 });
+        return responseForbidden()
     }
 }
