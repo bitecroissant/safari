@@ -1,7 +1,9 @@
 import { defaultResponse } from "./lib/helpers";
 import { createEventDate, deleteEventDates, listEventDates, updateEventDate } from "./modules/eventDates";
 import { createKnowledgeRecords, deleteKnowledgeRecord, listKnowledgeRecords, updateKnowledgeRecord } from "./modules/knowledgeRecords";
+import { me } from "./modules/me";
 import { createPoetryLine, deletePoetryLine, getPoetryLine, listPoetryLines, updatePoetryLine } from "./modules/poetryLines";
+import { createSessions } from "./modules/sessions";
 import { getNextSolarTerms } from "./modules/solarTerms";
 
 const DOMAIN = "gualand.cc"
@@ -19,9 +21,11 @@ export default {
 
 		const method = request.method
 
+		
+
 		if (method === 'OPTIONS') {
 			return new Response(null, {
-				status: 204, // No Content
+				status: 200, // No Content
 				headers: {
 					'Content-Type': 'application/json; charset=utf-8',
 					'Access-Control-Allow-Origin': '*',
@@ -90,9 +94,20 @@ export default {
 					return await deleteKnowledgeRecord(env, request, ctx);
 				}
 				break
+			case '/sessions':
+				if (method === 'POST') {
+					return await createSessions(env, request, ctx);
+				}
+				break;
+			case '/me':
+				if (method === 'GET') {
+					return await me(env, request, ctx);
+				}
+				break;
 			default:
 				return defaultResponse()
 		}
+
 		return defaultResponse();
 	},
 } satisfies ExportedHandler<Env>;

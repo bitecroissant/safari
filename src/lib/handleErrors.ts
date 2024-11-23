@@ -1,4 +1,4 @@
-import { ValidationError } from "./errors";
+import { AuthError, ValidationError } from "./errors";
 import { getRandomInt } from "./helpers";
 
 export const rejectMsgList = [
@@ -32,6 +32,9 @@ export const serverErrorMsgList = [
 export const handleError = (err: unknown) => {
     if (err instanceof ValidationError) {
         return responseBadRequest((err as Error).message)
+    }
+    if (err instanceof AuthError) {
+        return responseForbidden()
     }
     throw err;
     // return responseInternalServerError(serverErrorMsgList[getRandomInt(0, serverErrorMsgList.length - 1)])
