@@ -1095,3 +1095,40 @@ Reddit 是美国最大的在线论坛。这个工具每天4次提取主要频道
 https://www.image-charts.com/
 该服务通过 URL 接受参数，然后生成图表，以图片形式返回。
 
+
+https://www.ruanyifeng.com/blog/2018/10/weekly-issue-25.html
+
+4、你不需要Momentjs（英文）
+https://github.com/you-dont-need/You-Dont-Need-Momentjs
+本文列举如何用 date-fns 或者原生方法，取代 moment.js。
+
+5、Severless 的缺点（英文）
+https://dev.to/rohitakiwatkar/can-you-use-serverless-architecture-everywhere-any-drawbacks--gfj
+决定使用 Severless 架构之前，你应该读一下这篇文章，了解这种架构的一些问题。目前，最大的问题是，一旦用了它，就很难再摆脱对服务提供商的依赖。
+
+6、IPFS 介绍（英文）
+https://blog.cloudflare.com/distributed-web-gateway/
+IPFS 是一个具有 web 接口的分布式数据库，一旦写入，你的内容就将永远存在，且无法修改。本文是一篇很不错的介绍文章， Cloudflare 在文中宣布开通 IPFS 网关服务。如果你有自己的 IPFS 节点，就可以让 Cloudflare 的 CDN 网络分发你的内容。
+
+8、Github 的语义搜索（英文）
+https://github.blog/ai-and-ml/machine-learning/towards-natural-language-semantic-code-search/
+Github 正在测试语义搜索，匹配的依据不再是关键字，而是搜索的语义。比如，搜索"连接两个字符串"，就会跳出相关的代码。本文介绍实现细节。
+
+9、为什么 Reason 语言合适写 React 应用？（英文）
+https://www.freecodecamp.org/news/psst-heres-why-reasonreact-is-the-best-way-to-write-react-5088d434d035
+Facebook 在开发 React 的同时，还发明了一种新语言 Reason，它是 OCaml 语言的变种。Reason 和 React 的创始人是相同的，这篇文章解释了为什么 Reason 语言天生适合写 React 应用。
+
+10、现在的歌词变简单了吗？（英文）
+https://pudding.cool/2017/05/song-repetition/index.html
+简单的歌词通常有重复的内容。这篇文章使用压缩算法，比较现在的歌词与过去的歌词，看看哪个压缩得更小，内容更简单。
+
+1、ktmm
+https://github.com/ao/ktmm
+有时候，系统通过鼠标判断用户是否走开了。这个工具可以让鼠标保持运行。
+
+8、perkeep
+https://perkeep.org/
+perkeep 是一个开源工具，可以将你的文件同步储存到多个节点，保证不会丢失。它可以用作个人的储存系统，可以看作是亚马逊 S3 服务的本地实现。
+
+
+https://www.ruanyifeng.com/blog/2018/10/weekly-issue-26.html
