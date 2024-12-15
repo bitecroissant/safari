@@ -103,7 +103,6 @@ export async function updateEventDate(env: Env, request: Request<unknown, Incomi
 
 		const updateSql = "UPDATE EventDates SET isDeleted = ?, `gmtModified` = ?, `group` = ? , eventName = ? , happenAt = ? , iconName = ?, iconColor = ?, emojiIcon = ? WHERE `id` = ?"
 		const params = [isDeleted || 0, time().format('yyyy-MM-dd HH:mm:ss fff'), group, eventName, happenAt, iconName || '', iconColor || '', emojiIcon || '', id]
-		console.log(JSON.stringify(params))
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
