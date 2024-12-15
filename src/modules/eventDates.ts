@@ -11,6 +11,10 @@ type EventDatesTypes = {
 	group: string
 	eventName: string
 	happenAt: string
+	iconName: string
+	iconColor: string
+	emojiIcon: string
+	datesStatus: string
 }
 
 // 获取所有事件日期
