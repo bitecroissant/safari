@@ -91,7 +91,7 @@ export async function updateEventDate(env: Env, request: Request<unknown, Incomi
 		await jwtAuth(env, request)
 		const updateForm = await request.json<EventDatesTypes>()
 		notEmptyObject(updateForm, "params could not null")
-		const { id, group, eventName, happenAt, isDeleted } = updateForm
+		const { id, group, eventName, happenAt, isDeleted, iconColor, emojiIcon, iconName } = updateForm
 		notBlankStr(id, "id could not be blank")
 		notBlankStr(group, "group could not be blank")
 		notBlankStr(eventName, "eventName could not be blank")
@@ -101,8 +101,9 @@ export async function updateEventDate(env: Env, request: Request<unknown, Incomi
 		const { results: eventDates } = await env.D1_DB_CONNECTION.prepare(query).bind(id).all<EventDatesTypes>();
 		notEmptyObject(eventDates, "not found event dates")
 
-		const updateSql = "UPDATE EventDates SET isDeleted = ?, `group` = ? , eventName = ? , happenAt = ? WHERE `id` = ?"
-		const params = [isDeleted || 0, group, eventName, happenAt, id]
+		const updateSql = "UPDATE EventDates SET isDeleted = ?, `gmtModified` = ?, `group` = ? , eventName = ? , happenAt = ? , iconName = ?, iconColor = ?, emojiIcon = ? WHERE `id` = ?"
+		const params = [isDeleted || 0, time().format('yyyy-MM-dd HH:mm:ss fff'), group, eventName, happenAt, iconName || '', iconColor || '', emojiIcon || '', id]
+		console.log(JSON.stringify(params))
 		const result = await env.D1_DB_CONNECTION.prepare(updateSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
@@ -128,7 +129,7 @@ export async function createEventDate(env: Env, request: Request<unknown, Incomi
 		await jwtAuth(env, request)
 		const createForm = await request.json<EventDatesTypes>()
 		notEmptyObject(createForm, "params could not null")
-		const { group, eventName, happenAt } = createForm
+		const { group, eventName, happenAt, iconColor, emojiIcon, iconName } = createForm
 		notBlankStr(group, "group could not be blank")
 		notBlankStr(eventName, "eventName could not be blank")
 		notBlankStr(happenAt, "happenAt could not be blank")
@@ -144,13 +145,13 @@ export async function createEventDate(env: Env, request: Request<unknown, Incomi
 				if (historyList && historyList.length > 0) {
 					const historyIdList = historyList.map(i => i.id)
 					const deleteHistoryPlaceHolder = historyIdList.map(() => '?').join(', ')
-					const deleteHistorySql = `UPDATE EventDates SET \`gmtModified\` = ?, \`isDeleted\` = 1 WHERE id in (${deleteHistoryPlaceHolder})`
+					const deleteHistorySql = `UPDATE EventDates SET \`gmtModified\` = ?, \`datesStatus\` = \'invalid\' WHERE id in (${deleteHistoryPlaceHolder})`
 					await env.D1_DB_CONNECTION.prepare(deleteHistorySql).bind(time().format('yyyy-MM-dd HH:mm:ss fff'), ...historyIdList).run()
 				}
 		}
 
-		const insertSql = "INSERT INTO EventDates (isDeleted,`group`, eventName, happenAt, gmtCreate, gmtModified) VALUES (0, ?, ?, ?, ?, ?)"
-		const params = [group, eventName, happenAt, time().format('yyyy-MM-dd HH:mm:ss fff'), time().format('yyyy-MM-dd HH:mm:ss fff')]
+		const insertSql = "INSERT INTO EventDates (isDeleted, datesStatus, `group`, eventName, happenAt, gmtCreate, gmtModified, iconName, iconColor, emojiIcon) VALUES (0, 'active', ?, ?, ?, ?, ?, ?, ?, ?)"
+		const params = [group, eventName, happenAt, time().format('yyyy-MM-dd HH:mm:ss fff'), time().format('yyyy-MM-dd HH:mm:ss fff'), iconName || '', iconColor || '', emojiIcon || '']
 		const result = await env.D1_DB_CONNECTION.prepare(insertSql).bind(...params).run()
 
 		return new Response(JSON.stringify({ result }), {
