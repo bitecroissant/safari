@@ -1,6 +1,5 @@
 import { jwtAuth } from "../lib/auth/jwtHelpers"
 import { handleError } from "../lib/handleErrors"
-import { defaultResponse } from "../lib/helpers"
 import { time } from "../lib/time"
 
 type EventDatesType = {
@@ -17,8 +16,10 @@ export async function getNextSolarTerms(env: Env, request: Request<unknown, Inco
 	try {
 		const today = time()
 		today.removeTime()
-		const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND `group` = 'solar_term' ";
-		const { results } = await env.D1_DB_CONNECTION.prepare(query).all<EventDatesType>();
+		const yesterday = time().add(-1, 'day')
+		yesterday.removeTime()
+		const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND `group` = 'solar_term' AND `happenAt` > ? ";
+		const { results } = await env.D1_DB_CONNECTION.prepare(query).bind(yesterday.format()).all<EventDatesType>();
 		const filteredEventDates = results.filter(e => time(e.happenAt).notBefore(today.date));
 		filteredEventDates.sort((a, b) => time(a.happenAt).timestamp - time(b.happenAt).timestamp);
 		const closestEventDate = filteredEventDates[0];
