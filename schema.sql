@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS EventDates;
 CREATE TABLE IF NOT EXISTS EventDates (id INTEGER PRIMARY KEY, gmtCreate TEXT, gmtModified TEXT, isDeleted INTEGER, `group` TEXT, eventName TEXT, happenAt TEXT);
 INSERT INTO EventDates (isDeleted, `group`, eventName, happenAt) VALUES (1, '测试逻辑删除的内容不会被筛选出来', '😵‍💫 呱呱', '2024-11-13')
 ,(NULL, '测试逻辑删除位不填内容也不会被筛选出来', '🧙‍♀️ 呱呱x2', '2024-11-13')
+,(0, 'solar_term', '立春', '2025-02-14')
 ,(0, 'solar_term', '小雪', '2024-11-22')
 ,(0, 'solar_term', '冬至', '2024-12-21')
 ,(0, 'solar_term', '大雪', '2024-12-06')
