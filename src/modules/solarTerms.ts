@@ -24,8 +24,8 @@ export async function getNextSolarTerms(env: Env, request: Request<unknown, Inco
 		const query = "SELECT * FROM EventDates WHERE `isDeleted` = 0 AND `group` = 'solar_term' AND `happenAt` >= ? ";
 		const { results } = await env.D1_DB_CONNECTION.prepare(query).bind(yesterday.format()).all<EventDatesType>();
 		notEmptyArray(results, '没有节气了，快去配置')
-		// const filteredEventDates = results.filter(e => time(e.happenAt).notBefore(today.date));
-		const filteredEventDates = results
+		const filteredEventDates = results.filter(e => time(e.happenAt).notBefore(today.date));
+		// const filteredEventDates = results
 		filteredEventDates.sort((a, b) => time(a.happenAt).timestamp - time(b.happenAt).timestamp);
 		const closestEventDate = filteredEventDates[0];
 		const daysBetween = time(closestEventDate.happenAt).calcNaturalDaysBetween(today);

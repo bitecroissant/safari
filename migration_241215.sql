@@ -16,4 +16,6 @@ INSERT INTO EventDates (isDeleted, gmtCreate, gmtModified, `group`, eventName, h
 ,(0, 'null', '2024-11-29 12:55:07 665', '瓜', '瓜瓜理发', '2024-04-05', 'invalid')
 ,(0, 'null', 'null', 'solar_term', '大雪', '2024-12-06', 'active')
 ,(0, 'null', 'null', 'solar_term', '冬至', '2024-12-21', 'active')
+,(0, 'null', 'null', 'solar_term', 'last', '2025-02-18', 'active')
+,(0, 'null', 'null', 'solar_term', 'next', '2025-02-20', 'active')
 ,(0, 'null', 'null', 'solar_term', '小雪', '2024-11-22', 'active');
