@@ -25,10 +25,18 @@ export class Time {
   #date: Date
 
   constructor(t?: number | string | Date) {
-    // 北京时间是 UTC+8, 这里不传是服务器时间，手动设置为东八区时间，这里传入了，是业务时间，业务时间录入的都是东八区时间。
-    const timezoneOffset = 8 * 60; // 将小时转换为分钟
-    this.#date = t ? new Date(t) : new Date(new Date().getTime() + (timezoneOffset * 60000))
+    // // 北京时间是 UTC+8, 这里不传是服务器时间，手动设置为东八区时间，这里传入了，是业务时间，业务时间录入的都是东八区时间。
+    // const timezoneOffset = 8 * 60; // 将小时转换为分钟
+    // this.#date = t ? new Date(t) : new Date(new Date().getTime() + (timezoneOffset * 60000))
+    // // this.#date = t ? new Date(t) : new Date()
+
     // this.#date = t ? new Date(t) : new Date()
+    const date = t ? new Date(t) : new Date();
+    // 获取当前时间的 UTC 时间
+    const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    // 转换为北京时间（UTC+8）
+    const beijingDate = new Date(utcDate.getTime() + 8 * 3600000);
+    this.#date = beijingDate;
   }
 
   get date() {
