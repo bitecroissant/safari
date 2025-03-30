@@ -3,7 +3,7 @@ import { handleError } from "../lib/handleErrors"
 import { time } from "../lib/time"
 import { notBlankStr, notEmptyObject } from "../lib/validators"
 
-type PoetryLinesType = {
+export type PoetryLinesType = {
 	id: number
 	gmtCreate: string
 	gmtModified: string

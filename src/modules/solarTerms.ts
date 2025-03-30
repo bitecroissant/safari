@@ -5,13 +5,21 @@ import { pjson } from "../lib/helpers"
 import { time } from "../lib/time"
 import { notEmptyArray, notEmptyObject } from "../lib/validators"
 
-type EventDatesType = {
+export type EventDatesType = {
 	happenAt: string
 	eventName: string
 }
 
-type SolarTermType = {
+export type SolarTermType = {
 	name: string
+	key: string,
+	enName: string,
+	meteorologicalChanges: string,
+	relatedVerses: string
+	meaning: string
+	custom: string
+	recommendedFoods: string
+	addition: string
 }
 
 // 获取下一个节气信息，目前主要是 iphone 快捷方式在用

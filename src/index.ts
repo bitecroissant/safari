@@ -1,4 +1,5 @@
 import { defaultResponse } from "./lib/helpers";
+import { greetings } from "./modules/mobileGreetings";
 import { createEventDate, deleteEventDates, listEventDates, updateEventDate } from "./modules/eventDates";
 import { createKnowledgeRecords, deleteKnowledgeRecord, listKnowledgeRecords, updateKnowledgeRecord } from "./modules/knowledgeRecords";
 import { me } from "./modules/me";
@@ -35,6 +36,9 @@ export default {
 		}
 
 		switch (path) {
+			// 给 mobile 聚合一个接口
+			case '/mobile/greetings':
+				return await greetings(env, request, ctx);
 			// 获取下一个节气信息，目前主要是 iphone 快捷方式在用
 			case '/solar_terms/next':
 				return await getNextSolarTerms(env, request, ctx);
@@ -108,4 +112,3 @@ export default {
 		return defaultResponse();
 	},
 } satisfies ExportedHandler<Env>;
-
